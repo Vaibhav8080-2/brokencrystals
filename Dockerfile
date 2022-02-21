@@ -1,4 +1,4 @@
-FROM node:16.13-stretch-slim
+FROM node:14
 
 WORKDIR /var/www/
 
