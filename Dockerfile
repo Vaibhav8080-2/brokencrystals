@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:bullseye-slim
 
 WORKDIR /var/www/
 
