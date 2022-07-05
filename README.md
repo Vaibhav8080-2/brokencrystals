@@ -27,6 +27,15 @@ docker-compose --file=docker-compose.local.yml up -d
 #rebuild dockers
 docker-compose --file=docker-compose.local.yml up -d --build
 ```
+
+## Included tests for [@sec-tester/runner](https://github.com/NeuraLegion/sec-tester-js/tree/master/packages/runner)
+
+In the path *./src/test/* you can find tests to run with Jest.
+You must obtain API key from [Neuralegion](https://docs.brightsec.com/docs/manage-your-personal-account#manage-your-personal-api-keys-authentication-tokens) and place it into `BRIGHT_TOKEN` environment variable.
+Scanning target can be modified via `SEC_TESTER_TARGET` environment variable.
+Cluster can be changed via `BRIGHT_CLUSTER` environment variable.
+Run test with command *jest ./src/test/sec-tester/**NAME_OF_TEST**.spec.ts*
+
 ## Vulnerabilities Overview
 
 * **Broken JWT Authentication** - The application includes multiple endpoints that generate and validate several types of JWT tokens. The main login API, used by the UI, is utilizing one of the endpoints while others are available via direct call and described in Swagger.
@@ -51,7 +60,7 @@ docker-compose --file=docker-compose.local.yml up -d --build
   - The same form with both authenticated and unauthenticated user - the _Email subscription_ UI forms can be used for testing this vulnerability.
   - Different form for an authenticated and unauthenticated user - the _Add testimonial_ form can be used for testing. The forms are only available to authenticated users.
 
-* **Cross-Site Scripting (XSS) -
+* **Cross-Site Scripting (XSS)** -
   - **Reflective XSS** can be demonstrated by using the mailing list subscription form on the landing page.
   - **Persistent XSS** can be demonstrated using add testimonial form on the landing page (for authenticated users only).
 
@@ -75,13 +84,15 @@ docker-compose --file=docker-compose.local.yml up -d --build
 
 * **Local File Inclusion (LFI)** - The /api/files endpoint returns any file on the server from the path that is provided in the _path_ param. The UI uses this endpoint to load crystal images on the landing page.
 
+* **Mass Assignment** - You can add to user admin privilegies upon creating user or updating userdata. When you creating a new user /api/users/basic you can use additional hidden field in body request { ... "isAdmin" : true }. If you are trying to edit userdata with PUT request /api/users/one/{email}/info you can add this additional field mentioned above. For checking admin permissions there is one more endpoint: /api/users/one/{email}/adminpermission.
+
 * **Open Database** - The index.html file includes a link to manifest URL, which returns the server's configuration, including a DB connection string.
 
 * **OS Command Injection** - The /api/spawn endpoint spawns a new process using the command in the _command_ query parameter. The endpoint is not referenced from UI.
 
 * **Remote File Inclusion (RFI)** - The /api/files endpoint returns any file on the server from the path that is provided in the _path_ param. The UI uses this endpoint to load crystal images on the landing page.
 
-* **Secret Tokens** - The index.html file includes a link to manifest URL, which returns the server's configuration, including a Mailgun API key.
+* **Secret Tokens** - The index.html file includes a link to manifest URL, which returns the server's configuration, including a Google API key.
 
 * **Server-Side Template Injection (SSTI)** - The endpoint /api/render receives a plain text body and renders it using the doT (http://github.com/olado/dot) templating engine.
 
