@@ -109,3 +109,5 @@ Run test with command *jest ./src/test/sec-tester/**NAME_OF_TEST**.spec.ts*
 * **JavaScript Vulnerabilities Scanning** - Index.html includes an older version of the jQuery library with known vulnerabilities.
 
 
+
+
